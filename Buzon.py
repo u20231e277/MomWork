@@ -24,7 +24,7 @@ DB_PATH = os.path.join(current_dir, db_folder, db_filename)
 conexion = sqlite3.connect(DB_PATH)
 cursor = conexion.cursor()
 
-id_cliente = 1
+id_cliente = 3
 
 a=0
 i=1
