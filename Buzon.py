@@ -24,7 +24,7 @@ DB_PATH = os.path.join(current_dir, db_folder, db_filename)
 conexion = sqlite3.connect(DB_PATH)
 cursor = conexion.cursor()
 
-id_cliente = 3
+id_cliente = 124
 
 a=0
 i=1
@@ -311,7 +311,7 @@ while a < ValueCount:
             EC.presence_of_element_located((By.NAME, "Brefrecar"))
     )
     n = 0
-    while n < 65:  # Ejecutar por 65 segundos
+    while n < 5:  # Ejecutar por 65 segundos
         refrescar_boton = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.NAME, "Brefrecar"))
         )
@@ -343,35 +343,40 @@ while a < ValueCount:
     time.sleep(10)
 
     """Boton Aceptar Solicitud _ ONP:"""
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "iframeApplication"))  # ID del iframe
-    )
+    """AQUI EMPIEZA---"""
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "iframeApplication"))  # ID del iframe
+        )
 
-    # Cambia al contexto del iframe
-    iframe = driver.find_element(By.ID, "iframeApplication")
-    driver.switch_to.frame(iframe)
-    aceptar_boton = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@widgetid='dijit_form_Button_0' and contains(., 'Aceptar')]"))
-    )
-    # Desplázate hacia el botón si no está visible
-    driver.execute_script("arguments[0].scrollIntoView(true);", aceptar_boton)
+        # Cambia al contexto del iframe
+        iframe = driver.find_element(By.ID, "iframeApplication")
+        driver.switch_to.frame(iframe)
+        aceptar_boton = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@widgetid='dijit_form_Button_0' and contains(., 'Aceptar')]"))
+        )
+        # Desplázate hacia el botón si no está visible
+        driver.execute_script("arguments[0].scrollIntoView(true);", aceptar_boton)
 
-    # Haz clic en el botón
-    aceptar_boton.click()
-    print("Clic en el botón 'Aceptar' realizado con éxito.")
-
-
-    """Valores Solicitud _ ONP:"""
-    # Espera a que el iframe esté presente
+        # Haz clic en el botón
+        aceptar_boton.click()
+        print("Clic en el botón 'Aceptar' realizado con éxito.")
 
 
-    valores_tab = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@widgetid='tipoOperacion_tablist_valores']"))
-    )
-    valores_tab.click()
-    print("Clickeado CORRECTAMENTE")
-    time.sleep(8)
+        """Valores Solicitud _ ONP:"""
+        # Espera a que el iframe esté presente
 
+
+        valores_tab = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@widgetid='tipoOperacion_tablist_valores']"))
+        )
+        valores_tab.click()
+        print("Clickeado CORRECTAMENTE")
+        time.sleep(8)
+    except TimeoutException:
+        print("El boton Aceptar no aparecio no apareció, deteniendo el proceso.")
+
+    """AQUI TERMINA---"""
     #Tomar Captura pantalla 1
      
     # Obtener el directorio actual del script
@@ -426,34 +431,39 @@ while a < ValueCount:
     time.sleep(10)
 
     """Boton Aceptar Solicitud _ ESSALUD:"""
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "iframeApplication"))  # ID del iframe
-    )
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "iframeApplication"))  # ID del iframe
+        )
 
-    # Cambia al contexto del iframe
-    iframe = driver.find_element(By.ID, "iframeApplication")
-    driver.switch_to.frame(iframe)
-    aceptar_boton = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@widgetid='dijit_form_Button_0' and contains(., 'Aceptar')]"))
-    )
-    # Desplázate hacia el botón si no está visible
-    driver.execute_script("arguments[0].scrollIntoView(true);", aceptar_boton)
+        # Cambia al contexto del iframe
+        iframe = driver.find_element(By.ID, "iframeApplication")
+        driver.switch_to.frame(iframe)
+        aceptar_boton = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@widgetid='dijit_form_Button_0' and contains(., 'Aceptar')]"))
+        )
+        # Desplázate hacia el botón si no está visible
+        driver.execute_script("arguments[0].scrollIntoView(true);", aceptar_boton)
 
-    # Haz clic en el botón
-    aceptar_boton.click()
-    print("Clic en el botón 'Aceptar' realizado con éxito.")
-
-
-    """Valores Solicitud _ ESSALUD:"""
-    # Espera a que el iframe esté presente
+        # Haz clic en el botón
+        aceptar_boton.click()
+        print("Clic en el botón 'Aceptar' realizado con éxito.")
 
 
-    valores_tab = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@widgetid='tipoOperacion_tablist_valores']"))
-    )
-    valores_tab.click()
-    print("Clickeado CORRECTAMENTE")
-    time.sleep(8)
+        """Valores Solicitud _ ESSALUD:"""
+        # Espera a que el iframe esté presente
+
+
+        valores_tab = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@widgetid='tipoOperacion_tablist_valores']"))
+        )
+        valores_tab.click()
+        print("Clickeado CORRECTAMENTE")
+        time.sleep(8)
+
+    except TimeoutException:
+        print("El boton Aceptar no aparecio no apareció, deteniendo el proceso.")
+
 
     #Tomar Captura pantalla 2
      
@@ -508,34 +518,38 @@ while a < ValueCount:
     time.sleep(10)
 
     """Boton Aceptar Solicitud _ ESSALUD:"""
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "iframeApplication"))  # ID del iframe
-    )
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "iframeApplication"))  # ID del iframe
+        )
 
-    # Cambia al contexto del iframe
-    iframe = driver.find_element(By.ID, "iframeApplication")
-    driver.switch_to.frame(iframe)
-    aceptar_boton = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@widgetid='dijit_form_Button_0' and contains(., 'Aceptar')]"))
-    )
-    # Desplázate hacia el botón si no está visible
-    driver.execute_script("arguments[0].scrollIntoView(true);", aceptar_boton)
+        # Cambia al contexto del iframe
+        iframe = driver.find_element(By.ID, "iframeApplication")
+        driver.switch_to.frame(iframe)
+        aceptar_boton = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@widgetid='dijit_form_Button_0' and contains(., 'Aceptar')]"))
+        )
+        # Desplázate hacia el botón si no está visible
+        driver.execute_script("arguments[0].scrollIntoView(true);", aceptar_boton)
 
-    # Haz clic en el botón
-    aceptar_boton.click()
-    print("Clic en el botón 'Aceptar' realizado con éxito.")
-
-
-    """Valores Solicitud _ TESORO:"""
-    # Espera a que el iframe esté presente
+        # Haz clic en el botón
+        aceptar_boton.click()
+        print("Clic en el botón 'Aceptar' realizado con éxito.")
 
 
-    valores_tab = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@widgetid='tipoOperacion_tablist_valores']"))
-    )
-    valores_tab.click()
-    print("Clickeado CORRECTAMENTE")
-    time.sleep(8)
+        """Valores Solicitud _ TESORO:"""
+        # Espera a que el iframe esté presente
+
+
+        valores_tab = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@widgetid='tipoOperacion_tablist_valores']"))
+        )
+        valores_tab.click()
+        print("Clickeado CORRECTAMENTE")
+        time.sleep(8)
+    except TimeoutException:
+        print("El boton Aceptar no aparecio no apareció, deteniendo el proceso.")
+
 
     #Tomar Captura pantalla 2
      
