@@ -1,26 +1,39 @@
 import tkinter as tk
 import subprocess
+import sys
 
 # Variables para almacenar las instancias de los procesos
 process_buzon = None
 process_clientes = None
 
-# Funciones para ejecutar los otros scripts
+# Función para ejecutar el script Buzon.py con el id_cliente
 def start_buzon():
     global process_buzon
     try:
-        process_buzon = subprocess.Popen(["python", "Buzon.py"])  # Ejecuta el archivo 'buzon.py'
-        print("Buzón iniciado.")
+        id_cliente = int(entry_id_cliente.get())  # Obtener el id_cliente del campo de entrada
+        # Llamamos al script Buzon.py pasando id_cliente como argumento
+        process_buzon = subprocess.Popen(
+            ["python", "Buzon.py", str(id_cliente)]  # Pasamos id_cliente como argumento
+        )
+        print("Buzón iniciado con id_cliente:", id_cliente)
+    except ValueError:
+        print("Por favor, ingresa un número válido para id_cliente.")
     except Exception as e:
         print(f"Error al abrir Buzón: {e}")
 
 def start_buzon_dni():
     global process_buzon
     try:
-        process_buzon = subprocess.Popen(["python", "BuzonDNI.py"])  # Ejecuta el archivo 'buzon.py'
-        print("Buzón DNI iniciado.")
+        id_cliente = int(entry_id_cliente.get())  # Obtener el id_cliente del campo de entrada
+        # Llamamos al script Buzon.py pasando id_cliente como argumento
+        process_buzon = subprocess.Popen(
+            ["python", "BuzonDNI.py", str(id_cliente)]  # Pasamos id_cliente como argumento
+        )
+        print("BuzónDNI iniciado con id_cliente:", id_cliente)
+    except ValueError:
+        print("Por favor, ingresa un número válido para id_cliente.")
     except Exception as e:
-        print(f"Error al abrir Buzón DNI: {e}")
+        print(f"Error al abrir BuzónDNI: {e}")
 
 def start_clientes():
     global process_clientes
@@ -45,12 +58,20 @@ def stop_processes():
 # Configuración de la ventana principal
 root = tk.Tk()
 root.title("Panel de Control")
-root.geometry("400x400")
+root.geometry("400x500")
 root.config(bg="#0B3D91")  # Fondo azul oscuro
 
 # Etiqueta de título
 label = tk.Label(root, text="Elige una opción:", font=("Arial", 18), bg="#0B3D91", fg="white")
 label.pack(pady=20)
+
+# Etiqueta de título
+label = tk.Label(root, text="Escribe el ID del Cliente", font=("Arial", 10), bg="#0B3D91", fg="white")
+label.pack(pady=10)
+
+# Campo de entrada para el id_cliente
+entry_id_cliente = tk.Entry(root, font=("Arial", 14), width=20)
+entry_id_cliente.pack(pady=10)
 
 # Botón para el Buzón
 btn_buzon = tk.Button(root, text="Buzón - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_buzon)

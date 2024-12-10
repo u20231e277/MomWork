@@ -11,6 +11,7 @@ import pyautogui
 import time
 import sqlite3
 import os
+import sys
 
 def buzon(id_cliente):
     # Ruta al archivo de la base de datos
@@ -314,7 +315,7 @@ def buzon(id_cliente):
                 EC.presence_of_element_located((By.NAME, "Brefrecar"))
         )
         n = 0
-        while n < 5:  # Ejecutar por 65 segundos
+        while n < 65:  # Ejecutar por 65 segundos
             refrescar_boton = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.NAME, "Brefrecar"))
             )
@@ -631,4 +632,17 @@ def buzon(id_cliente):
 
     #FIN DEL while
     conexion.close()
-buzon(1)
+
+
+
+if __name__ == "__main__":
+        # Verificar si se pasa un argumento (id_cliente)
+        if len(sys.argv) > 1:
+            try:
+                # Obtener el id_cliente desde los argumentos
+                id_cliente = int(sys.argv[1])  # El primer argumento es id_cliente
+                buzon(id_cliente)  # Llamar a la función buzon con id_cliente
+            except ValueError:
+                print("Error: El argumento proporcionado no es un número válido.")
+        else:
+            print("Error: No se proporcionó id_cliente.")
