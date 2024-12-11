@@ -95,6 +95,34 @@ def buzon(id_cliente):
         contra.send_keys(Keys.ENTER)
 
         time.sleep(5)
+
+        """BOTON CONTINUAR SIN REGISTRAR"""
+        # Verifica si el iframe está presente
+        # Espera a que el iframe esté presente
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "ifrVCE"))  # ID del iframe
+        )
+
+        # Cambia al contexto del iframe
+        iframe = driver.find_element(By.ID, "ifrVCE")
+        if iframe:
+            driver.switch_to.frame(iframe)
+            print("Entro al iframe")
+            # Verifica si el botón 'Finalizar' está presente
+            boton_Continuar_Sin_Registrar = driver.find_elements(By.ID, "actEconoSalirBtn_label")
+            if boton_Continuar_Sin_Registrar:
+                boton_Continuar_Sin_Registrar[0].click()
+                print("Botón 'Finalizar' presionado con éxito.")
+            else:
+                print("El botón 'Finalizar' no apareció. Continuando...")
+
+            # Regresa al contexto principal
+            driver.switch_to.default_content()
+        else:
+            print("El iframe no está presente. Continuando...")
+
+        time.sleep(2)
+
         """BOTON FINALIZAR"""
         # Verifica si el iframe está presente
         iframe_elements = driver.find_elements(By.TAG_NAME, "iframe")
