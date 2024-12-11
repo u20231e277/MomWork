@@ -59,13 +59,13 @@ def buzon(id_cliente):
         options.binary_location = r"C:\driver_google\chrome-win64\chrome.exe"  # Ruta al archivo chrome.exe
         options.add_argument("--no-sandbox")  # Desactiva sandbox si hay problemas de permisos
         options.add_argument("--disable-dev-shm-usage")  # Soluciona problemas de memoria compartida
-        options.add_argument("--headless")  # Opcional: ejecuta en modo headless (sin interfaz gráfica)
+        options.add_argument("--incognito")  # Activar modo incógnito
 
         # Ruta al ChromeDriver dentro de la carpeta de Chrome
         service = Service(r"C:\driver_google\chrome-win64\chromedriver.exe")
 
         # Configuración del WebDriver
-        driver = webdriver.Chrome(service=service)
+        driver = webdriver.Chrome(service=service, options=options)
 
         driver.get("https://api-seguridad.sunat.gob.pe/v1/clientessol/4f3b88b3-d9d6-402a-b85d-6a0bc857746a/oauth2/loginMenuSol?lang=es-PE&showDni=true&showLanguages=false&originalUrl=https://e-menu.sunat.gob.pe/cl-ti-itmenu/AutenticaMenuInternet.htm&state=rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAx3CAAAABAAAAADdAAEZXhlY3B0AAZwYXJhbXN0AEsqJiomL2NsLXRpLWl0bWVudS9NZW51SW50ZXJuZXQuaHRtJmI2NGQyNmE4YjVhZjA5MTkyM2IyM2I2NDA3YTFjMWRiNDFlNzMzYTZ0AANleGVweA==")
         time.sleep(3)

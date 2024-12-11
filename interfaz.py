@@ -43,6 +43,20 @@ def start_clientes():
     except Exception as e:
         print(f"Error al abrir Clientes: {e}")
 
+def start_sunafil():
+    global process_sunafil
+    try:
+        id_cliente = int(entry_id_cliente.get())  # Obtener el id_cliente del campo de entrada
+        # Llamamos al script Buzon.py pasando id_cliente como argumento
+        process_sunafil = subprocess.Popen(
+            ["python", "Sunafil.py", str(id_cliente)]  # Pasamos id_cliente como argumento
+        )
+        print("Sunafil iniciado con id_cliente:", id_cliente)
+    except ValueError:
+        print("Por favor, ingresa un número válido para id_cliente.")
+    except Exception as e:
+        print(f"Error al abrir Sunafil: {e}")
+
 # Función para detener los procesos
 def stop_processes():
     global process_buzon, process_clientes
@@ -58,7 +72,7 @@ def stop_processes():
 # Configuración de la ventana principal
 root = tk.Tk()
 root.title("Panel de Control")
-root.geometry("400x500")
+root.geometry("400x580")
 root.config(bg="#0B3D91")  # Fondo azul oscuro
 
 # Etiqueta de título
@@ -81,9 +95,15 @@ btn_buzon.pack(pady=10)
 btn_buzon_dni = tk.Button(root, text="BuzónDNI - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_buzon_dni)
 btn_buzon_dni.pack(pady=10)
 
+# Botón para los Sunafil
+btn_sunafil = tk.Button(root, text="Sunafil - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_sunafil)
+btn_sunafil.pack(pady=10)
+
 # Botón para los Clientes
 btn_clientes = tk.Button(root, text="Clientes - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_clientes)
 btn_clientes.pack(pady=10)
+
+
 
 # Botón para detener los procesos
 btn_stop = tk.Button(root, text="Detener", font=("Arial", 14), bg="#FF6347", fg="white", width=20, command=stop_processes)
