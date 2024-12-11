@@ -4,9 +4,13 @@ import sys
 
 # Variables para almacenar las instancias de los procesos
 process_buzon = None
+process_buzon_dni = None
 process_clientes = None
+process_sunafil = None
+process_Nueva_Plataforma = None
 
 # Función para ejecutar el script Buzon.py con el id_cliente
+"""DONE"""
 def start_buzon():
     global process_buzon
     try:
@@ -21,12 +25,13 @@ def start_buzon():
     except Exception as e:
         print(f"Error al abrir Buzón: {e}")
 
+"""DONE"""
 def start_buzon_dni():
-    global process_buzon
+    global process_buzon_dni
     try:
         id_cliente = int(entry_id_cliente.get())  # Obtener el id_cliente del campo de entrada
         # Llamamos al script Buzon.py pasando id_cliente como argumento
-        process_buzon = subprocess.Popen(
+        process_buzon_dni = subprocess.Popen(
             ["python", "BuzonDNI.py", str(id_cliente)]  # Pasamos id_cliente como argumento
         )
         print("BuzónDNI iniciado con id_cliente:", id_cliente)
@@ -34,7 +39,7 @@ def start_buzon_dni():
         print("Por favor, ingresa un número válido para id_cliente.")
     except Exception as e:
         print(f"Error al abrir BuzónDNI: {e}")
-
+"""DONE"""
 def start_clientes():
     global process_clientes
     try:
@@ -43,6 +48,7 @@ def start_clientes():
     except Exception as e:
         print(f"Error al abrir Clientes: {e}")
 
+"""DONE"""
 def start_sunafil():
     global process_sunafil
     try:
@@ -57,6 +63,7 @@ def start_sunafil():
     except Exception as e:
         print(f"Error al abrir Sunafil: {e}")
 
+"""DONE"""
 def start_Nueva_Plataforma():
     global process_Nueva_Plataforma
     try:
@@ -73,15 +80,27 @@ def start_Nueva_Plataforma():
 
 # Función para detener los procesos
 def stop_processes():
-    global process_buzon, process_clientes
+    global process_buzon, process_buzon_dni, process_clientes, process_sunafil, process_Nueva_Plataforma
     if process_buzon is not None:
         process_buzon.terminate()  # Termina el proceso de 'buzon.py'
         process_buzon = None
         print("Buzón detenido.")
+    if process_buzon_dni is not None:
+        process_buzon_dni.terminate()  # Termina el proceso de 'buzon.py'
+        process_buzon_dni = None
+        print("Buzón DNI detenido.")
     if process_clientes is not None:
         process_clientes.terminate()  # Termina el proceso de 'clientes.py'
         process_clientes = None
         print("Clientes detenido.")
+    if process_sunafil is not None:
+        process_sunafil.terminate()  # Termina el proceso de 'clientes.py'
+        process_sunafil = None
+        print("Sunafil detenido.")
+    if process_Nueva_Plataforma is not None:
+        process_Nueva_Plataforma.terminate()  # Termina el proceso de 'clientes.py'
+        process_Nueva_Plataforma = None
+        print("Nueva Plataforma detenido.")
 
 # Configuración de la ventana principal
 root = tk.Tk()

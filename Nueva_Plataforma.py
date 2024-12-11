@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
 import pyautogui
 import time
 import sqlite3
@@ -69,7 +70,7 @@ def Nueva_Plataforma(id_cliente):
         driver.get("https://api-seguridad.sunat.gob.pe/v1/clientessol/59d39217-c025-4de5-b342-393b0f4630ab/oauth2/loginMenuSol?lang=es-PE&showDni=true&showLanguages=false&originalUrl=https://e-menu.sunat.gob.pe/cl-ti-itmenu2/AutenticaMenuInternetPlataforma.htm&state=rO0ABXQA701GcmNEbDZPZ28xODJOWWQ4aTNPT2krWUcrM0pTODAzTEJHTmtLRE1IT2pBQ2l2eW84em5lWjByM3RGY1BLT0tyQjEvdTBRaHNNUW8KWDJRQ0h3WmZJQWZyV0JBaGtTT0hWajVMZEg0Mm5ZdHlrQlFVaDFwMzF1eVl1V2tLS3ozUnVoZ1ovZisrQkZndGdSVzg1TXdRTmRhbAp1ek5OaXdFbG80TkNSK0E2NjZHeG0zNkNaM0NZL0RXa1FZOGNJOWZsYjB5ZXc3MVNaTUpxWURmNGF3dVlDK3pMUHdveHI2cnNIaWc1CkI3SkxDSnc9")
         time.sleep(3)
         # Configura la espera explícita (máximo 5 segundos)
-        wait = WebDriverWait(driver, 5)
+        wait = WebDriverWait(driver, 10)
 
         driver.maximize_window()
 
@@ -91,37 +92,86 @@ def Nueva_Plataforma(id_cliente):
         Password = wait.until(EC.presence_of_element_located((By.ID, "txtContrasena")))
         Password.send_keys(Value2)
         Password.send_keys(Keys.ENTER)
-        time.sleep(5)
+        
 
         # Crear la carpeta si no existe
         nombre_carpeta = f"{digito} - {razon_social}"
         current_dir = os.path.dirname(__file__)
         carpeta_empresa = os.path.join(current_dir, "Nueva Plataforma" ,nombre_carpeta)
         os.makedirs(carpeta_empresa, exist_ok=True)
+        time.sleep(5)
 
 
-        driver.execute_script("document.getElementById('divSubMenuIzquierda').scrollIntoView(true);")
-        driver.execute_script("window.scrollBy(0, 500);")  # Ajusta la cantidad de scroll si es necesario
-        time.sleep(10)
-
-
+        """CLICK EN BOLETA DE PAGOS:"""
         #Abrir boleta de pago
         Boleta_de_pago= wait.until(EC.presence_of_element_located((By.ID, "nivel3_55_1_4"))) 
         Boleta_de_pago.click()
 
+        time.sleep(3)
+        
+        """CLICK EN VALORES:"""
         #Abrir Valores
         Valores= wait.until(EC.presence_of_element_located((By.ID,("nivel4_55_1_4_1_3"))))
         Valores.click()
 
         time.sleep(5)
 
-        #Scrolleamos 500 pixeles
-        driver.execute_script("window.scrollBy(0, 500);")
+        WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "iframeApplication"))  # ID del iframe
+            )
+
+        # Cambia al contexto del iframe
+        iframe = driver.find_element(By.ID, "iframeApplication")
+        driver.switch_to.frame(iframe)
+        driver.execute_script("window.scrollBy(0, 700);")
+
+        time.sleep(5)
+
+        # Obtener el directorio actual del script
+        current_dir = os.path.dirname(__file__)
+        # Construir la ruta para Capturas
+        ruta_capturas = os.path.join(current_dir, "Nueva Plataforma", nombre_carpeta)
+        #Tomamos captura y guardamos en el archivo
+        nombre_archivo = os.path.join(ruta_capturas, f"Valores.png")
+        screenshot = pyautogui.screenshot()
+
+        # Guardar la captura en un archivo
+        screenshot.save(nombre_archivo)
+
+        #Salir del iframe
+        driver.switch_to.default_content()
+
+
+        """CLICK EN FRACCIONAMIENTO:"""
+        #Abrir boleta de pago
+        Fraccionamiento= wait.until(EC.presence_of_element_located((By.ID, "nivel4_55_1_4_1_4"))) 
+        Fraccionamiento.click()
+        time.sleep(5)
+        #Tomamos captura y guardamos en el archivo
+        ruta_capturas = os.path.join(current_dir, "Nueva Plataforma", nombre_carpeta)
+        nombre_archivo2 = os.path.join(ruta_capturas, f"Fraccionamiento.png")
+        screenshot2 = pyautogui.screenshot()
+
+        # Guardar la captura en un archivo
+        screenshot2.save(nombre_archivo2)
+
+
+        
+
+        """CLICK EN BUZON:"""
+        #Abrir boleta de pago
+        Buzon= wait.until(EC.presence_of_element_located((By.ID, "aOpcionBuzon"))) 
+        Buzon.click()
+
+        time.sleep(6)
 
         #Tomamos captura y guardamos en el archivo
-        nombre_archivo = os.path.join(carpeta_empresa, f"Valores.png")
-        screenshot = driver.get_screenshot_as_file(nombre_archivo)
-        driver.switch_to.default_content()
+        ruta_capturas = os.path.join(current_dir, "Nueva Plataforma", nombre_carpeta)
+        nombre_archivo3 = os.path.join(ruta_capturas, f"BuzonNotificaciones.png")
+        screenshot3 = pyautogui.screenshot()
+
+        # Guardar la captura en un archivo
+        screenshot3.save(nombre_archivo3)
 
         i+=1
         a+=1
@@ -131,9 +181,7 @@ def Nueva_Plataforma(id_cliente):
     # Fin del While    
     conn.close()
 
-Nueva_Plataforma(1)
 
-"""
 if __name__ == "__main__":
         # Verificar si se pasa un argumento (id_cliente)
         if len(sys.argv) > 1:
@@ -145,4 +193,3 @@ if __name__ == "__main__":
                 print("Error: El argumento proporcionado no es un número válido.")
         else:
             print("Error: No se proporcionó id_cliente.") 
-"""
