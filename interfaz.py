@@ -57,6 +57,20 @@ def start_sunafil():
     except Exception as e:
         print(f"Error al abrir Sunafil: {e}")
 
+def start_Nueva_Plataforma():
+    global process_Nueva_Plataforma
+    try:
+        id_cliente = int(entry_id_cliente.get())  # Obtener el id_cliente del campo de entrada
+        # Llamamos al script Buzon.py pasando id_cliente como argumento
+        process_Nueva_Plataforma = subprocess.Popen(
+            ["python", "Nueva_Plataforma.py", str(id_cliente)]  # Pasamos id_cliente como argumento
+        )
+        print("Nueva Plataforma iniciado con id_cliente:", id_cliente)
+    except ValueError:
+        print("Por favor, ingresa un número válido para id_cliente.")
+    except Exception as e:
+        print(f"Error al abrir Nueva Plataforma: {e}")
+
 # Función para detener los procesos
 def stop_processes():
     global process_buzon, process_clientes
@@ -72,7 +86,7 @@ def stop_processes():
 # Configuración de la ventana principal
 root = tk.Tk()
 root.title("Panel de Control")
-root.geometry("400x580")
+root.geometry("400x650")
 root.config(bg="#0B3D91")  # Fondo azul oscuro
 
 # Etiqueta de título
@@ -99,10 +113,13 @@ btn_buzon_dni.pack(pady=10)
 btn_sunafil = tk.Button(root, text="Sunafil - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_sunafil)
 btn_sunafil.pack(pady=10)
 
+# Botón para los Nueva Plataforma
+btn_Nueva_Plataforma = tk.Button(root, text="Nueva Plataforma - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_Nueva_Plataforma)
+btn_Nueva_Plataforma.pack(pady=10)
+
 # Botón para los Clientes
 btn_clientes = tk.Button(root, text="Clientes - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_clientes)
 btn_clientes.pack(pady=10)
-
 
 
 # Botón para detener los procesos

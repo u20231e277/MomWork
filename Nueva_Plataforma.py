@@ -30,7 +30,7 @@ def Nueva_Plataforma(id_cliente):
     cursor = conn.cursor()
 
 
-    id_cliente=1
+    #id_cliente=1
     a=0
     i=1
 
@@ -38,12 +38,14 @@ def Nueva_Plataforma(id_cliente):
     campo_customerIDQuantity = cursor.fetchone()
     ValueCount = campo_customerIDQuantity[0]
 
+    id_cliente_while = id_cliente
+
     while a < ValueCount:
-        cursor.execute("SELECT Razon_Social FROM Customers WHERE CustomersID = ?",(id_cliente,))
+        cursor.execute("SELECT Razon_Social FROM Customers WHERE CustomersID = ?",(id_cliente_while,))
         campo_RazonSocial = cursor.fetchone()
         razon_social=campo_RazonSocial[0]
 
-        cursor.execute("SELECT Digito FROM Customers WHERE CustomersID = ?",(id_cliente,))
+        cursor.execute("SELECT Digito FROM Customers WHERE CustomersID = ?",(id_cliente_while,))
         campo_digito = cursor.fetchone()
         digito = campo_digito[0]
         
@@ -71,19 +73,19 @@ def Nueva_Plataforma(id_cliente):
 
         driver.maximize_window()
 
-        cursor.execute("SELECT RUC FROM Customers WHERE CustomersID = ?",(id_cliente,))
+        cursor.execute("SELECT RUC FROM Customers WHERE CustomersID = ?",(id_cliente_while,))
         Campo_RUCSQL = cursor.fetchone()
         Value = Campo_RUCSQL[0]
         Ruc = wait.until(EC.presence_of_element_located((By.ID, "txtRuc")))
         Ruc.send_keys(Value)
     
-        cursor.execute("SELECT Usuario FROM Customers WHERE CustomersID = ?",(id_cliente,))
+        cursor.execute("SELECT Usuario FROM Customers WHERE CustomersID = ?",(id_cliente_while,))
         Campo_UsuarioSQL = cursor.fetchone()
         Value1 = Campo_UsuarioSQL[0]
         usuario = wait.until(EC.presence_of_element_located((By.ID, "txtUsuario")))
         usuario.send_keys(Value1) 
 
-        cursor.execute("SELECT Password FROM Customers WHERE CustomersID = ?",(id_cliente,))
+        cursor.execute("SELECT Password FROM Customers WHERE CustomersID = ?",(id_cliente_while,))
         Campo_PasswordSQL = cursor.fetchone()
         Value2 = Campo_PasswordSQL[0]
         Password = wait.until(EC.presence_of_element_located((By.ID, "txtContrasena")))
@@ -96,6 +98,12 @@ def Nueva_Plataforma(id_cliente):
         current_dir = os.path.dirname(__file__)
         carpeta_empresa = os.path.join(current_dir, "Nueva Plataforma" ,nombre_carpeta)
         os.makedirs(carpeta_empresa, exist_ok=True)
+
+
+        driver.execute_script("document.getElementById('divSubMenuIzquierda').scrollIntoView(true);")
+        driver.execute_script("window.scrollBy(0, 500);")  # Ajusta la cantidad de scroll si es necesario
+        time.sleep(10)
+
 
         #Abrir boleta de pago
         Boleta_de_pago= wait.until(EC.presence_of_element_located((By.ID, "nivel3_55_1_4"))) 
@@ -117,12 +125,15 @@ def Nueva_Plataforma(id_cliente):
 
         i+=1
         a+=1
-        id_cliente+=1
+        id_cliente_while+=1
         driver.quit()
 
     # Fin del While    
     conn.close()
 
+Nueva_Plataforma(1)
+
+"""
 if __name__ == "__main__":
         # Verificar si se pasa un argumento (id_cliente)
         if len(sys.argv) > 1:
@@ -134,3 +145,4 @@ if __name__ == "__main__":
                 print("Error: El argumento proporcionado no es un número válido.")
         else:
             print("Error: No se proporcionó id_cliente.") 
+"""
