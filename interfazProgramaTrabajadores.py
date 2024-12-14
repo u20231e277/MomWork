@@ -6,6 +6,7 @@ import sys
 
 process_clientes = None
 process_Nueva_Plataforma = None
+process_reporte_semanal = None
 
 # Función para ejecutar el script Buzon.py con el id_cliente
 
@@ -17,6 +18,14 @@ def start_clientes():
     except Exception as e:
         print(f"Error al abrir Trabajadores: {e}")
 
+
+def start_reporte_semanal():
+    global process_reporte_semanal
+    try:
+        process_reporte_semanal = subprocess.Popen(["python", "reportes_semanal.py"])  # Ejecuta el archivo 'clientes.py'
+        print("Reporte_semanal iniciado.")
+    except Exception as e:
+        print(f"Error al abrir Reporte_semanal: {e}")
 
 """DONE"""
 def start_Nueva_Plataforma():
@@ -30,7 +39,7 @@ def start_Nueva_Plataforma():
 
 # Función para detener los procesos
 def stop_processes():
-    global process_clientes, process_Nueva_Plataforma
+    global process_clientes, process_Nueva_Plataforma, process_reporte_semanal
    
     if process_clientes is not None:
         process_clientes.terminate()  # Termina el proceso de 'Trabajadores.py'
@@ -41,6 +50,11 @@ def stop_processes():
         process_Nueva_Plataforma.terminate()  # Termina el proceso de 'clientes.py'
         process_Nueva_Plataforma = None
         print("Reporte detenido.")
+    
+    if process_reporte_semanal is not None:
+        process_reporte_semanal.terminate()  # Termina el proceso de 'clientes.py'
+        process_reporte_semanal = None
+        print("Reporte Semanal detenido.")
 
 # Configuración de la ventana principal
 root = tk.Tk()
@@ -54,8 +68,12 @@ label.pack(pady=20)
 
 
 # Botón para los Nueva Plataforma
-btn_Nueva_Plataforma = tk.Button(root, text="Reportes - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_Nueva_Plataforma)
+btn_Nueva_Plataforma = tk.Button(root, text="Boletas - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_Nueva_Plataforma)
 btn_Nueva_Plataforma.pack(pady=10)
+
+# Botón para los Nueva Plataforma
+btn_reporte_semanal = tk.Button(root, text="Reporte Semanal - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_reporte_semanal)
+btn_reporte_semanal.pack(pady=10)
 
 # Botón para los Clientes
 btn_clientes = tk.Button(root, text="Trabajadores - Start", font=("Arial", 14), bg="#1E90FF", fg="white", width=20, command=start_clientes)
