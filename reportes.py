@@ -22,15 +22,12 @@ def bucle():
     DB_PATH = os.path.join(current_dir, db_folder, db_filename)
     conexion = sqlite3.connect(DB_PATH)
     cursor = conexion.cursor()
-    cursor.execute("SELECT COUNT(*) FROM Trabajadores")
-    campo_customerIDQuantity = cursor.fetchone()
-    ValueCount = campo_customerIDQuantity[0]
+
+    cursor.execute("SELECT TrabajadorID FROM Trabajadores")
+    ids_trabajadores = [row[0] for row in cursor.fetchall()] 
 
 
-    a = 0
-    id_trabajador = 1
-
-    while a < ValueCount:    
+    for id_trabajador in ids_trabajadores:   
         def interfaz():
             # Configuración de la ventana principal
             root = tk.Tk()
@@ -419,7 +416,7 @@ def bucle():
                 c.drawString(85, 222, f"CONAFOVICER                                                                                                               {conafovicer:.3f}") #
                 c.drawString(85, 205, f"RENTA QUINTA CATEGORÍA RETENCIONES                                                               {renta_5ta_categoria:.3f}") #
                 if (sistema_pension == "ONP"):    
-                    c.drawString(85, 188, f"SISTEMA NAC. DE PENSIONES DL 19990                                                                          {onp:.3f}") #
+                    c.drawString(85, 188, f"SISTEMA NAC. DE PENSIONES DL 19990                                                                     {onp:.3f}") #
                 elif (sistema_pension == "AFP"):
                     c.drawString(85, 188, f"AFP APORTACION OBLIGATORIA                                                                                {afp_aportacion_obligatoria:.3f}") #
 
@@ -453,8 +450,6 @@ def bucle():
 
         interfaz()
         
-        a+=1
-        id_trabajador+=1
         print("TERMINO EL PROCESO")
         #FIN DEL while
 
