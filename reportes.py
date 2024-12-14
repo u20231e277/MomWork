@@ -11,6 +11,7 @@ import subprocess
 import sys
 import sqlite3
 import os
+from tkinter import IntVar
 
 def bucle():
 
@@ -25,9 +26,49 @@ def bucle():
 
     cursor.execute("SELECT TrabajadorID FROM Trabajadores")
     ids_trabajadores = [row[0] for row in cursor.fetchall()] 
+    
+    def seleccionar_semana():
+        # Guarda el valor seleccionado en la variable "semana"
+        semana_seleccionada = variable_semana.get()
+        print(f"Semana seleccionada: {semana_seleccionada}")
+        ventana.destroy()  # Cierra la ventana
+
+    # Crear la ventana principal
+    ventana = tk.Tk()
+    ventana.title("Seleccionar Semana")
+    ventana.geometry("350x300")
+
+    # Etiqueta de instrucción
+    etiqueta = tk.Label(ventana, text="¿Qué semana es?", font=("Arial", 14))
+    etiqueta.pack(pady=10)
+
+    # Variable para almacenar la opción seleccionada
+    variable_semana = IntVar()
+    variable_semana.set(1)  # Valor predeterminado
+
+    # Crear los botones de opción
+    for i in range(1, 6):
+        boton = tk.Radiobutton(
+            ventana, text=f"Semana {i}", variable=variable_semana, value=i, font=("Arial", 12)
+        )
+        boton.pack(anchor=tk.W)
+
+    # Botón para confirmar la selección
+    boton_confirmar = tk.Button(
+        ventana, text="Confirmar", command=seleccionar_semana, font=("Arial", 12)
+    )
+    boton_confirmar.pack(pady=10)
+
+    # Ejecutar el bucle principal de la interfaz
+    ventana.mainloop()
+
+    # Al cerrar la ventana, el valor de la variable se puede utilizar
+    semana = variable_semana.get()
+    print(f"El valor final de semana es: {semana}")
 
 
     for id_trabajador in ids_trabajadores:   
+        semanaFor = semana
         def interfaz():
             # Configuración de la ventana principal
             root = tk.Tk()
@@ -148,7 +189,7 @@ def bucle():
             # Loop de la ventana
             root.mainloop()
 
-        def calculo(dias_trabajados, cargo, domingos_feriados,renta_5ta_categoria_input,sistema_pension_value,afp_comision_Sobre_RA_value,verificacion_SCTR_salud, dni, nombres, fecha_ingreso, situacion):
+        def calculo(dias_trabajados, cargo, domingos_feriados,renta_5ta_categoria_input,sistema_pension_value,afp_comision_Sobre_RA_value,verificacion_SCTR_salud, dni, nombres, fecha_ingreso, situacion, semanaCalculo = semanaFor):
 
             """Horas Trabajadas:"""
             horas_trabajadas = dias_trabajados * 8 #Cada dia tiene 8 horas laborales
@@ -222,6 +263,11 @@ def bucle():
             #Sacar de la base de datos si es ONP o AFP el trabajador
             
             sistema_pension = sistema_pension_value
+            onp = None
+            afp_aportacion_obligatoria = None
+            afp_prima_seguro = None
+            afp_comision_Sobre_RA = None
+
             #Total Egresos caso ONP:
             if  sistema_pension == "ONP":
                 onp = jornal_semanal * 0.13
@@ -255,6 +301,138 @@ def bucle():
             fecha_actual = datetime.now()
             periodo_ = fecha_actual.strftime("%m-%Y")
             
+
+
+            def registrar_semanal(
+                id_trabajador, nombres, dni, dias_trabajados, cargo, sistema_pension,
+                jornal_basico, jornal_semanal, cts, dominical, buc, 
+                bonificacion_altura, gratificacion_proporcional, vacaciones_truncas, 
+                movilidad, bonificacion_extraordinario_ley_29351,
+                conafovicer, renta_5ta_categoria, onp,
+                afp_aportacion_obligatoria, afp_prima_seguro, afp_comision_sobre_ra,
+                essalud_, sctr_salud, total_ingresos_, total_egresos_,
+                total_aporte, total_neto_, periodo_, semana = semanaCalculo
+            ):
+                try:
+                    # Conectar a la base de datos
+                    current_dir = os.getcwd()
+                    db_folder = "Database_Clientes_Yuvana"
+                    db_filename = "Database_Constructoras.db"
+                    DB_PATH = os.path.join(current_dir, db_folder, db_filename)
+                    conexion = sqlite3.connect(DB_PATH)
+                    cursor = conexion.cursor()
+
+                    # Nombre dinámico de la tabla
+                    table_name = f"Registro Semana {semana}"
+
+                    # Crear la tabla si no existe
+                    cursor.execute(
+                        f"""
+                        CREATE TABLE IF NOT EXISTS "{table_name}" (
+                            TrabajadorID INTEGER,
+                            Nombre TEXT,
+                            DNI TEXT,
+                            Dias_Trabajados INTEGER,
+                            Cargo TEXT,
+                            Sistema_Pensionario TEXT,
+                            Jornal_Basico REAL,
+                            Jornal_Semanal REAL,
+                            CTS REAL,
+                            Dominical REAL,
+                            BUC REAL,
+                            Bonificacion_Altura REAL,
+                            Gratificacion_Proporcional REAL,
+                            Vacaciones_Truncas REAL,
+                            Movilidad REAL,
+                            Bonificacion_Extraordinario REAL,
+                            Total_Ingresos REAL,
+                            Conafovicer REAL,
+                            Renta_5ta_Categoria REAL,
+                            ONP REAL,
+                            AFP_Aportacion_Obligatoria REAL,
+                            AFP_Prima_Seguro REAL,
+                            AFP_Comision_Sobre_RA REAL,
+                            Total_Egresos REAL,
+                            Essalud REAL,
+                            SCTR_Salud REAL,
+                            Total_Aporte REAL,
+                            Total_Neto REAL,
+                            Periodo TEXT
+                        )
+                        """
+                    )
+
+                    # Determinar los valores según el sistema pensionario
+                    if sistema_pension == "ONP":
+                        cursor.execute(
+                            f"""
+                            INSERT INTO "{table_name}" (
+                                TrabajadorID, Nombre, DNI, Dias_Trabajados, Cargo, 
+                                Sistema_Pensionario, Jornal_Basico, Jornal_Semanal, CTS, 
+                                Dominical, BUC, Bonificacion_Altura, Gratificacion_Proporcional, 
+                                Vacaciones_Truncas, Movilidad, Bonificacion_Extraordinario, 
+                                Total_Ingresos, Conafovicer, Renta_5ta_Categoria, ONP, 
+                                Total_Egresos, Essalud, SCTR_Salud, Total_Aporte, Total_Neto, Periodo
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """,
+                            (
+                                id_trabajador, nombres, dni, dias_trabajados, cargo, 
+                                sistema_pension, jornal_basico, jornal_semanal, cts, dominical, 
+                                buc, bonificacion_altura, gratificacion_proporcional, 
+                                vacaciones_truncas, movilidad, 
+                                bonificacion_extraordinario_ley_29351, total_ingresos_, conafovicer, 
+                                renta_5ta_categoria, onp, total_egresos_, essalud_, sctr_salud, 
+                                total_aporte, total_neto_, periodo_
+                            )
+                        )
+                    elif sistema_pension == "AFP":
+                        cursor.execute(
+                            f"""
+                            INSERT INTO "{table_name}" (
+                                TrabajadorID, Nombre, DNI, Dias_Trabajados, Cargo, 
+                                Sistema_Pensionario, Jornal_Basico, Jornal_Semanal, CTS, 
+                                Dominical, BUC, Bonificacion_Altura, Gratificacion_Proporcional, 
+                                Vacaciones_Truncas, Movilidad, Bonificacion_Extraordinario, 
+                                Total_Ingresos, Conafovicer, Renta_5ta_Categoria, AFP_Aportacion_Obligatoria, 
+                                AFP_Prima_Seguro, AFP_Comision_Sobre_RA, Total_Egresos, Essalud, 
+                                SCTR_Salud, Total_Aporte, Total_Neto, Periodo
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """,
+                            (
+                                id_trabajador, nombres, dni, dias_trabajados, cargo, 
+                                sistema_pension, jornal_basico, jornal_semanal, cts, dominical, 
+                                buc, bonificacion_altura, gratificacion_proporcional, 
+                                vacaciones_truncas, movilidad, 
+                                bonificacion_extraordinario_ley_29351, total_ingresos_, conafovicer, 
+                                renta_5ta_categoria, afp_aportacion_obligatoria, afp_prima_seguro, 
+                                afp_comision_sobre_ra, total_egresos_, essalud_, sctr_salud, 
+                                total_aporte, total_neto_, periodo_
+                            )
+                        )
+
+                    # Confirmar los cambios y cerrar la conexión
+                    conexion.commit()
+                    conexion.close()
+
+                    print(f"Registro semanal guardado en '{table_name}' para el trabajador {nombres} ({dni}).")
+                except sqlite3.Error as e:
+                    print(f"Error al registrar los datos semanales: {e}")
+
+
+            registrar_semanal(
+                id_trabajador=id_trabajador, nombres=nombres, dni=dni, dias_trabajados=dias_trabajados,
+                cargo=cargo, sistema_pension=sistema_pension_value, jornal_basico=jornal_basico,
+                jornal_semanal=jornal_semanal, cts=cts, dominical=dominical, buc=buc,
+                bonificacion_altura=bonificacion_altura, gratificacion_proporcional=gratificacion_proporcional,
+                vacaciones_truncas=vacaciones_truncas, movilidad=movilidad,
+                bonificacion_extraordinario_ley_29351=bonificacion_extraordinario_ley_29351,
+                conafovicer=conafovicer, renta_5ta_categoria=renta_5ta_categoria_input,
+                onp=onp, afp_aportacion_obligatoria=afp_aportacion_obligatoria,
+                afp_prima_seguro=afp_prima_seguro, afp_comision_sobre_ra=afp_comision_Sobre_RA,
+                essalud_=essalud_, sctr_salud=SCTR_salud if verificacion_SCTR_salud else 0,
+                total_ingresos_=total_ingresos_, total_egresos_=total_egresos_,
+                total_aporte=total_aporte, total_neto_=total_neto_, periodo_=fecha_actual
+            )        
 
             def generar_boleta():
                 # Obtener el directorio actual del script
